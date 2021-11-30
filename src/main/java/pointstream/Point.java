@@ -1,6 +1,7 @@
 package pointstream;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -55,9 +56,7 @@ public class Point {
     }
 
     public static Map<String, List<Point>> getMapOfPoints(Stream<Point> pointStream, int gap) {
-        Map<String, List<Point>> map = new HashMap<>();
-
-        return map;
+        return pointStream.collect(Collectors.groupingBy(Point::getColour));
     }
 
     public static void main(String[] args) {
@@ -72,7 +71,8 @@ public class Point {
 
         Stream<Point> points = Stream.of(p1, p2, p3, p4, p5,p6);
 
-        System.out.println(getListOfPoints(points, 3));
+        //System.out.println(getListOfPoints(points, 3));
+        System.out.println(getMapOfPoints(points, 3));
 
     }
 }
