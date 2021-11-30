@@ -34,17 +34,21 @@ public class Point {
 
     public static List<List<Point>> getListOfPoints(Stream<Point> pointStream, int gap) {
 
-        Function<Point, Integer> f = (Point v) -> {
+        class Helper {
+            long bucket = 1;
+            long previousTS = 1;
+        }
 
-            int i = 1;
+        Helper h = new Helper();
 
-            for (; i <= v.getTs(); i++) {
-                if (v.getTs() <= gap * i) {
-                    return i;
-                }
+        Function<Point, Long> f = (Point v) -> {
+
+            if (v.getTs() >= h.previousTS + gap) {
+                h.bucket++;
             }
+            h.previousTS = v.getTs();
+            return h.bucket;
 
-            return i * gap;
         };
 
         return pointStream.collect(Collectors.groupingBy(f)).values().stream().collect(Collectors.toList());
@@ -63,8 +67,10 @@ public class Point {
         Point p3 = new Point(6, "blue");
         Point p4 = new Point(7, "blue");
         Point p5 = new Point(8, "blue");
+        Point p6 = new Point(12, "red");
 
-        Stream<Point> points = Stream.of(p1, p2, p3, p4, p5);
+
+        Stream<Point> points = Stream.of(p1, p2, p3, p4, p5,p6);
 
         System.out.println(getListOfPoints(points, 3));
 
